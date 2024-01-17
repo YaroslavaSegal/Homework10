@@ -24,7 +24,7 @@ class Phone(Field):
 
 
 class Record:
-    def __init__(self, Name):
+    def __init__(self, Name: Name):
         self.Name = Name
         self.Phone = []
 
@@ -60,7 +60,6 @@ class AddressBook(UserDict):
         record = Record(Name)
 
         self.data[record.Name] = record
-
     def add_record(self, record):
         if record.Name in self.data:
             raise ValueError("This user is already exist")
@@ -78,9 +77,3 @@ class AddressBook(UserDict):
             del self.data[name]
 
 
-def main():
-    pass
-
-
-if __name__ == "__main__":
-    main()
