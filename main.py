@@ -7,8 +7,8 @@ class Field:
 
 
 class Name(Field):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self, value):
+        super().__init__(value)
 
 
 class Phone(Field):
