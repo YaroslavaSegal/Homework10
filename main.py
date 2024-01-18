@@ -60,8 +60,8 @@ class Record:
         else:
             raise ValueError("Can't edit: this phone number doesn't exist")
 
-    def find_phone(self, phone):
-        phone = Phone(phone)
+    def find_phone(self, number):
+        phone = Phone(number)
         if phone in self.phones:
             return phone
         else:
