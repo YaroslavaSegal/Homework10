@@ -3,7 +3,15 @@ from collections import UserDict
 
 class Field:
     def __init__(self, value):
+        if not self.is_valid(value):
+            raise ValueError
         self.value = value
+
+    def is_valid(self, value):
+        return True
+
+    def __str__(self):
+        return str(self.value)
 
 
 class Name(Field):
@@ -14,57 +22,67 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
-        self.check_phone()
 
-    def check_phone(self):
-        if not (self.value.isdigit() and len(self.value) == 10):
-            raise ValueError("Incorrect phone number: enter 10 digits")
+
+
+    def is_valid(self, value):
+        if not (value.isdigit() and len(value) == 10):
+            raise ValueError
         else:
-            return self.value
+            return value
 
 
 class Record:
-    def __init__(self, Name: Name):
-        self.Name = Name
-        self.Phone = []
+    def __init__(self, name):
+        self.name = Name(name)
+        self.phones = []
 
-    def add_phone(self, phone: Phone):
-        if phone in self.Phone:
+    def add_phone(self, number):
+        phone = Phone(number)
+        if phone in self.phones:
             raise ValueError("This phone number is already saved")
         else:
-            self.Phone.append(phone)
+            self.phones.append(phone)
 
-    def remove_phone(self, phone: Phone):
-        if phone in self.Phone:
-            self.Phone.remove(phone)
+    def remove_phone(self, number):
+        phone = Phone(number)
+        if phone in self.phones:
+            self.phones.remove(phone)
         else:
             raise KeyError("Can't remove: this phone number doesn't exist")
 
-    def edit_phone(self, old_phone: Phone, new_phone: Phone):
-        if old_phone in self.Phone:
-            target_index = self.Phone.index(old_phone)
-            self.Phone[target_index] = new_phone
+    def edit_phone(self, old_number, new_number):
+        old_phone = Phone(old_number)
+        new_phone = Phone(new_number)
+        if old_phone in self.phones:
+            target_index = self.phones.index(old_phone)
+            self.phones[target_index] = new_phone
         else:
             raise ValueError("Can't edit: this phone number doesn't exist")
 
-    def find_phone(self, phone: Phone):
-        if phone in self.Phone:
-            return Phone(phone)
+    def find_phone(self, phone):
+        phone = Phone(phone)
+        if phone in self.phones:
+            return phone
         else:
             return None
 
+    def __str__(self):
+        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+
 
 class AddressBook(UserDict):
-    def __init__(self):
+    def __init__(self, record=None):
         super().__init__()
-        record = Record(Name)
+        record = Record(record)
+        # self.data[record.name] = record
 
-        self.data[record.Name] = record
-    def add_record(self, record):
-        if record.Name in self.data:
+    def add_record(self, text):
+        record = Record(text)
+        if record.name in self.data:
             raise ValueError("This user is already exist")
         else:
-            self.data[record.Name] = record
+            self.data[record.name] = record
 
     def find(self, name):
         if name not in self.data:
@@ -75,5 +93,6 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
+
 
 
