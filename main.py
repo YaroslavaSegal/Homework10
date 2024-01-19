@@ -36,8 +36,9 @@ class Record:
         self.phones = []
 
     def add_phone(self, number):
-        if number in self.phones:
-            raise ValueError
+        for phone in self.phones:
+            if phone.value == number:
+                raise ValueError
         else:
             phone = Phone(number)
             self.phones.append(phone)
@@ -48,10 +49,10 @@ class Record:
                 self.phones.remove(phone)
 
     def edit_phone(self, old_number, new_number):
-        for elem in self.phones:
-            if elem.value == old_number:
+        for phone in self.phones:
+            if phone.value == old_number:
                 new_phone = Phone(new_number)
-                target_index = self.phones.index(elem)
+                target_index = self.phones.index(phone)
                 self.phones[target_index] = new_phone
                 return new_phone
         else:
