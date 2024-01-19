@@ -23,8 +23,6 @@ class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
 
-
-
     def is_valid(self, value):
         if not (value.isdigit() and len(value) == 10):
             raise ValueError
@@ -38,32 +36,31 @@ class Record:
         self.phones = []
 
     def add_phone(self, number):
-        phone = Phone(number)
-        if phone in self.phones:
-            raise ValueError("This phone number is already saved")
+        if number in self.phones:
+            raise ValueError
         else:
+            phone = Phone(number)
             self.phones.append(phone)
 
     def remove_phone(self, number):
-        phone = Phone(number)
-        if phone in self.phones:
-            self.phones.remove(phone)
-        else:
-            raise KeyError("Can't remove: this phone number doesn't exist")
+        for phone in self.phones:
+            if phone.value == number:
+                self.phones.remove(phone)
 
     def edit_phone(self, old_number, new_number):
-        old_phone = Phone(old_number)
-        new_phone = Phone(new_number)
-        if old_phone in self.phones:
-            target_index = self.phones.index(old_phone)
-            self.phones[target_index] = new_phone
+        for elem in self.phones:
+            if elem.value == old_number:
+                new_phone = Phone(new_number)
+                target_index = self.phones.index(elem)
+                self.phones[target_index] = new_phone
+                return new_phone
         else:
-            raise ValueError("Can't edit: this phone number doesn't exist")
+            raise ValueError
 
     def find_phone(self, number):
-        phone = Phone(number)
-        if phone in self.phones:
-            return phone
+        for phone in self.phones:
+            if phone.value == number:
+                return phone
         else:
             return None
 
@@ -75,14 +72,13 @@ class AddressBook(UserDict):
     def __init__(self, record=None):
         super().__init__()
         record = Record(record)
-        # self.data[record.name] = record
+        self.data[record.name.value] = record
 
-    def add_record(self, text):
-        record = Record(text)
-        if record.name in self.data:
-            raise ValueError("This user is already exist")
+    def add_record(self, record: Record):
+        if record in self.data:
+            raise ValueError
         else:
-            self.data[record.name] = record
+            self.data[record.name.value] = record
 
     def find(self, name):
         if name not in self.data:
@@ -93,6 +89,4 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
-
-
 
