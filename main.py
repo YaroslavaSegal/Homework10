@@ -16,7 +16,6 @@ class Field:
         if value:
             return True
 
-
     @value.setter
     def value(self, value):
         if self.is_valid(value):
@@ -45,7 +44,6 @@ class Phone(Field):
             return True
 
 
-
 class Birthday(Field):
     def __init__(self, value):
         super().__init__(value)
@@ -57,18 +55,16 @@ class Birthday(Field):
         if datetime.strptime(value, '%d-%m-%Y').date():
             return True
 
+    @property
+    def value(self):
+        return self.__value
 
-
-    #@property
-    #def value(self):
-        #return self.__value
-
-    #@value.setter
-    #def value(self, value):
-        #if self.is_valid(value):
-            #self.__value = value
-        #else:
-            #raise ValueError
+    @value.setter
+    def value(self, value):
+        if self.is_valid(value):
+            self.__value = datetime.strptime(value, '%d-%m-%Y').date()
+        else:
+            raise ValueError
 
 
 class Record:
@@ -154,8 +150,3 @@ class AddressBook(UserDict):
                 yield self.page
                 self.page = []
         yield self.page
-
-phone = Phone('7777777777')
-print(phone)
-birthday = Birthday('12-11-1988')
-print(birthday)
