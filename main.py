@@ -1,14 +1,20 @@
 from collections import UserDict
+from datetime import datetime, date
 
 
 class Field:
     def __init__(self, value):
-        if not self.is_valid(value):
-            raise ValueError
+        self.__value = None
         self.value = value
 
-    def is_valid(self, value):
-        return True
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value):
+        if True:
+            self.__value = value
 
     def __str__(self):
         return str(self.value)
@@ -23,25 +29,68 @@ class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
 
-    def is_valid(self, value):
-        if not (value.isdigit() and len(value) == 10):
-            raise ValueError
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value):
+        if value.isdigit() and len(value) == 10:
+            self.__value = value
         else:
-            return value
+            raise ValueError
+
+
+class Birthday(Field):
+    def __init__(self, value):
+        super().__init__(value)
+        self.__value = None
+        self.value = value
+
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, value):
+        if not value:
+            return None
+        else:
+            try:
+                value = datetime.strptime(value, '%d-%m-%Y').date()
+                self.__value = value
+            except ValueError:
+                raise ValueError
 
 
 class Record:
-    def __init__(self, name):
+    def __init__(self, name, birthday=None):
         self.name = Name(name)
         self.phones = []
+        self.birthday = Birthday(birthday)
+
+    @property
+    def days_to_birthday(self):
+        current_date = date.today()
+        current_year = current_date.year
+        user_date = self.birthday.value.replace(year=current_year)
+        delta = user_date.toordinal() - current_date.toordinal()
+        if delta == 0:
+            return f'Today is your birthday! Congratulations!'
+        elif delta > 0:
+            return f'{delta} days left until your birthday'
+        else:
+            user_date = self.birthday.value.replace(year=current_year + 1)
+            delta = user_date.toordinal() - current_date.toordinal()
+            return f'{delta} days left until your birthday'
 
     def add_phone(self, number):
         for phone in self.phones:
             if phone.value == number:
                 raise ValueError
         else:
-            phone = Phone(number)
-            self.phones.append(phone)
+            new_phone = Phone(number)
+            self.phones.append(new_phone)
 
     def remove_phone(self, number):
         for phone in self.phones:
@@ -66,28 +115,34 @@ class Record:
             return None
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
+        return (f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)},"
+                f" birthday: {self.birthday.value}")
 
 
 class AddressBook(UserDict):
-    def __init__(self, record=None):
-        super().__init__()
-        record = Record(record)
-        self.data[record.name.value] = record
 
     def add_record(self, record: Record):
-        if record in self.data:
-            raise ValueError
-        else:
+        if record.name.value not in self.data:
             self.data[record.name.value] = record
+        else:
+            raise ValueError
 
-    def find(self, name):
-        if name not in self.data:
+    def find(self, username):
+        if username not in self.data:
             return None
         else:
-            return self.data[name]
+            return self.data[username]
 
-    def delete(self, name):
-        if name in self.data:
-            del self.data[name]
+    def delete(self, username):
+        if username in self.data:
+            del self.data[username]
 
+    def iterator(self, N):
+        self.page = []
+
+        for value in self.data.values():
+            self.page.append(f'{value}')
+            if len(self.page) == N:
+                yield self.page
+                self.page = []
+        yield self.page
