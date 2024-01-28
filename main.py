@@ -19,7 +19,7 @@ class Field:
 
     @value.setter
     def value(self, value):
-        if value.is_valid(value):
+        if self.is_valid(value):
             self.__value = value
         else:
             raise ValueError
@@ -44,16 +44,6 @@ class Phone(Field):
         if value.isdigit() and len(value) == 10:
             return True
 
-    @property
-    def value(self):
-        return self.__value
-
-    @value.setter
-    def value(self, value):
-        if value.is_valid(value):
-            self.__value = value
-        else:
-            raise ValueError
 
 
 class Birthday(Field):
@@ -62,24 +52,23 @@ class Birthday(Field):
         self.__value = None
         self.value = value
 
+    @staticmethod
     def is_valid(value):
-        try:
-            value = datetime.strptime(value, '%d-%m-%Y').date()
+        if datetime.strptime(value, '%d-%m-%Y').date():
             return True
-        except ValueError:
-            return f'Incorrect date!'
 
 
-    @property
-    def value(self):
-        return self.__value
 
-    @value.setter
-    def value(self, value):
-        if value.is_valid(value):
-            self.__value = value
-        else:
-            raise ValueError
+    #@property
+    #def value(self):
+        #return self.__value
+
+    #@value.setter
+    #def value(self, value):
+        #if self.is_valid(value):
+            #self.__value = value
+        #else:
+            #raise ValueError
 
 
 class Record:
@@ -168,3 +157,5 @@ class AddressBook(UserDict):
 
 phone = Phone('7777777777')
 print(phone)
+birthday = Birthday('12-11-1988')
+print(birthday)
