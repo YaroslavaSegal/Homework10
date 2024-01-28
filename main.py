@@ -64,8 +64,8 @@ class Birthday(Field):
 
     def is_valid(value):
         try:
-            value_obj = datetime.strptime(value, '%d-%m-%Y').date()
-            return value_obj
+            value = datetime.strptime(value, '%d-%m-%Y').date()
+            return True
         except ValueError:
             return f'Incorrect date!'
 
