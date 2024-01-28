@@ -13,8 +13,8 @@ class Field:
 
     @staticmethod
     def is_valid(value):
-        if True:
-            return value
+        if value:
+            return True
 
 
     @value.setter
@@ -36,13 +36,13 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         super().__init__(value)
-        #self.__value = None
-        #self.value = value
+        self.__value = None
+        self.value = value
 
     @staticmethod
     def is_valid(value):
         if value.isdigit() and len(value) == 10:
-            return value
+            return True
 
     @property
     def value(self):
@@ -166,3 +166,5 @@ class AddressBook(UserDict):
                 self.page = []
         yield self.page
 
+phone = Phone('7777777777')
+print(phone)
