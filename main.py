@@ -137,12 +137,12 @@ class AddressBook(UserDict):
         if username in self.data:
             del self.data[username]
 
-    def iterator(self, N):
+    def iterator(self, n):
         self.page = []
 
         for value in self.data.values():
             self.page.append(f'{value}')
-            if len(self.page) == N:
+            if len(self.page) == n:
                 yield self.page
                 self.page = []
         yield self.page
